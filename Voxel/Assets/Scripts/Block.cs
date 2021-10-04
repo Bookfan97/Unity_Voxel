@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Block : MonoBehaviour
 {
+    public Material atlas;
+    
     [System.Serializable]
     public enum BlockSide
     {
@@ -16,7 +18,7 @@ public class Block : MonoBehaviour
     {
         MeshFilter meshFilter = this.gameObject.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = this.gameObject.AddComponent<MeshRenderer>();
-
+        meshRenderer.material = atlas;
         Quad[] quads = new Quad[6];
         quads[0] = new Quad(BlockSide.BOTTOM, offset);
         quads[1] = new Quad(BlockSide.TOP, offset);

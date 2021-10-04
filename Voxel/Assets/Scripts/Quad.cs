@@ -14,10 +14,10 @@ public class Quad
         Vector3[] normals = new Vector3[4];
         Vector2[] uvs = new Vector2[4];
         int[] triangles = new int[6];
-        Vector2 uv00 = new Vector2(0, 0);
-        Vector2 uv10 = new Vector2(1, 0);
-        Vector2 uv01 = new Vector2(0, 1);
-        Vector2 uv11 = new Vector2(1, 1);
+        Vector2 uv00 = new Vector2(0.125f, 0.9375f);
+        Vector2 uv10 = new Vector2(.1875f, 0.9375f);
+        Vector2 uv01 = new Vector2(0.125f, 1);
+        Vector2 uv11 = new Vector2(.1875f, 1);
 
         Vector3 p0 = new Vector3(-0.5f, -0.5f, 0.5f) + offset;
         Vector3 p1 = new Vector3(0.5f, -0.5f, 0.5f) + offset;

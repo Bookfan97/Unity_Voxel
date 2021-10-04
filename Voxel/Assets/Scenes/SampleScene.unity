@@ -152,6 +152,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e091c9be6a761854991b643def766a77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  atlas: {fileID: 2100000, guid: e3c7f49eb4b81ff47906266a2cd22648, type: 2}
   offset: {x: 0, y: 0, z: 0}
 --- !u!4 &1000642788
 Transform:
@@ -279,6 +280,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e091c9be6a761854991b643def766a77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  atlas: {fileID: 2100000, guid: e3c7f49eb4b81ff47906266a2cd22648, type: 2}
   offset: {x: 1, y: 1, z: 1}
 --- !u!4 &1234503653
 Transform:
