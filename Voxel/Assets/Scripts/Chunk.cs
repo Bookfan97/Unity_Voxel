@@ -8,22 +8,25 @@ using UnityEngine.Rendering;
 
 public class Chunk : MonoBehaviour
 {
-    public Material atlas;
+public Material atlas;
 
     public int width = 2;
     public int height = 2;
     public int depth = 2;
 
-    [Header("Perlin Settings")] 
+    [Header("Perlin Settings")]
     public float heightScale = 10;
     public float scale = 0.001f;
     public int octaves = 8;
     public float heightOffset = -33;
-    
+
     public Vector3 location;
-    
+
     public Block[,,] blocks;
     //Flat[x + WIDTH * (y + DEPTH * z)] = Original[x, y, z]
+    //x = i % WIDTH
+    //y = (i / WIDTH) % HEIGHT
+    //z = i / (WIDTH * HEIGHT )
     public MeshUtils.BlockType[] chunkData;
 
     void BuildChunk()
@@ -32,11 +35,10 @@ public class Chunk : MonoBehaviour
         chunkData = new MeshUtils.BlockType[blockCount];
         for (int i = 0; i < blockCount; i++)
         {
-            int x = i % width + (int) location.x;
-            int y = (i / width) % height + (int) location.y;
-            int z = (i / width) * height + (int) location.z;
-            
-            if(MeshUtils.fBM(x,z, octaves, scale, heightScale, heightOffset) > y)
+            int x = i % width + (int)location.x;
+            int y = (i / width) % height + (int)location.y;
+            int z = i / (width * height) + (int)location.z;
+            if(MeshUtils.fBM(x, z, octaves, scale, heightScale, heightOffset) > y)
                 chunkData[i] = MeshUtils.BlockType.DIRT;
             else
                 chunkData[i] = MeshUtils.BlockType.AIR;
@@ -46,16 +48,18 @@ public class Chunk : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
-    
+
     public void CreateChunk(Vector3 dimensions, Vector3 position)
     {
         location = position;
         width = (int) dimensions.x;
         height = (int)dimensions.y;
         depth = (int)dimensions.z;
-        
+
+
+
         MeshFilter mf = this.gameObject.AddComponent<MeshFilter>();
         MeshRenderer mr = this.gameObject.AddComponent<MeshRenderer>();
         mr.material = atlas;
@@ -78,8 +82,7 @@ public class Chunk : MonoBehaviour
             {
                 for (int x = 0; x < width; x++)
                 {
-                    blocks[x, y, z] = new Block(new Vector3(x, y, z) + location, 
-                        chunkData[x + width * (y + depth * z)], this);
+                    blocks[x, y, z] = new Block(new Vector3(x, y, z) + location, chunkData[x + width * (y + depth * z)], this);
                     if (blocks[x, y, z].mesh != null)
                     {
                         inputMeshes.Add(blocks[x, y, z].mesh);
@@ -122,9 +125,8 @@ public class Chunk : MonoBehaviour
         newMesh.RecalculateBounds();
 
         mf.mesh = newMesh;
-        MeshCollider meshCollider = this.gameObject.AddComponent<MeshCollider>();
-        meshCollider.sharedMesh = mf.mesh;
-
+        MeshCollider collider = this.gameObject.AddComponent<MeshCollider>();
+        collider.sharedMesh = mf.mesh;
     }
 
     [BurstCompile]
