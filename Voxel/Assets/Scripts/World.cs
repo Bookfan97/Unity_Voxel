@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class World : MonoBehaviour
 {
-    public static Vector3 worldDimensions = new Vector3(10,10,10);
+    public static Vector3 worldDimensions = new Vector3(3,3,3);
     public static Vector3 chunkDimensions = new Vector3(10,10,10);
     public GameObject chunkPrefab;
     

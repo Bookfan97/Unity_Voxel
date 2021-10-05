@@ -122,6 +122,8 @@ public class Chunk : MonoBehaviour
         newMesh.RecalculateBounds();
 
         mf.mesh = newMesh;
+        MeshCollider meshCollider = this.gameObject.AddComponent<MeshCollider>();
+        meshCollider.sharedMesh = mf.mesh;
 
     }
 
