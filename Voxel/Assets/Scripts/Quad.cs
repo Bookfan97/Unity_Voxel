@@ -6,7 +6,7 @@ public class Quad
 {
     public Mesh mesh;
     // Start is called before the first frame update
-    public Quad(Block.BlockSide blockSide, Vector3 offset, MeshUtils.BlockType blockType)
+    public Quad(MeshUtils.BlockSide blockSide, Vector3 offset, MeshUtils.BlockType blockType)
     {
         mesh = new Mesh();
         mesh.name = "ScriptedQuad";
@@ -30,37 +30,37 @@ public class Quad
         
         switch (blockSide)
         {
-            case Block.BlockSide.FRONT:
+            case MeshUtils.BlockSide.FRONT:
                 vertices = new Vector3[] { p4, p5, p1, p0 };
                 normals = new Vector3[] { Vector3.forward, Vector3.forward, Vector3.forward, Vector3.forward };
                 uvs = new Vector2[] { uv11, uv01, uv00, uv10 };
                 triangles = new int[] { 3, 1, 0, 3, 2, 1 };
                 break;
-            case Block.BlockSide.BACK:
+            case MeshUtils.BlockSide.BACK:
                 vertices = new Vector3[] { p6, p7, p3, p2 };
                 normals = new Vector3[] { Vector3.back, Vector3.back, Vector3.back, Vector3.back };
                 uvs = new Vector2[] { uv11, uv01, uv00, uv10 };
                 triangles = new int[] { 3, 1, 0, 3, 2, 1 };
                 break;
-            case Block.BlockSide.LEFT:
+            case MeshUtils.BlockSide.LEFT:
                 vertices = new Vector3[] { p7, p4, p0, p3 };
                 normals = new Vector3[] { Vector3.left, Vector3.left, Vector3.left, Vector3.left };
                 uvs = new Vector2[] { uv11, uv01, uv00, uv10 };
                 triangles = new int[] { 3, 1, 0, 3, 2, 1 };
                 break;
-            case Block.BlockSide.RIGHT:
+            case MeshUtils.BlockSide.RIGHT:
                 vertices = new Vector3[] { p5, p6, p2, p1 };
                 normals = new Vector3[] { Vector3.right, Vector3.right, Vector3.right, Vector3.right };
                 uvs = new Vector2[] { uv11, uv01, uv00, uv10 };
                 triangles = new int[] { 3, 1, 0, 3, 2, 1 };
                 break;
-            case Block.BlockSide.TOP:
+            case MeshUtils.BlockSide.TOP:
                 vertices = new Vector3[] { p7, p6, p5, p4 };
                 normals = new Vector3[] { Vector3.up, Vector3.up, Vector3.up, Vector3.up };
                 uvs = new Vector2[] { uv11, uv01, uv00, uv10 };
                 triangles = new int[] { 3, 1, 0, 3, 2, 1 };
                 break;
-            case Block.BlockSide.BOTTOM:
+            case MeshUtils.BlockSide.BOTTOM:
                 vertices = new Vector3[] { p0, p1, p2, p3 };
                 normals = new Vector3[] { Vector3.down, Vector3.down, Vector3.down, Vector3.down };
                 uvs = new Vector2[] { uv11, uv01, uv00, uv10 };
