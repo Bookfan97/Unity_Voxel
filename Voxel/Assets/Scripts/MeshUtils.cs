@@ -29,6 +29,20 @@ public static class MeshUtils
         /*SAND*/	  { new Vector2(0.125f,0.875f),  new Vector2(0.1875f,0.875f),
             new Vector2(0.125f,0.9375f), new Vector2(0.1875f,0.9375f)}
     };
+
+    public static float fBM(float x, float z, int octaves, float scale, float heightScale, float heightOffset)
+    {
+        float total = 0;
+        float frequency = 1;
+        for (int i = 0; i < octaves; i++)
+        {
+            total += Mathf.PerlinNoise(x * scale * frequency, z * scale * frequency) * heightScale;
+            frequency *= 2;
+        }
+
+        return total + heightOffset;
+    }
+
     public static Mesh mergedMeshes(Mesh[] meshes)
     {
         Mesh mesh = new Mesh();
@@ -100,5 +114,5 @@ public static class MeshUtils
         mesh.vertices = vertexes.ToArray();
         mesh.normals = normals.ToArray();
         mesh.uv = uvs.ToArray();
-    }
+    } 
 }
