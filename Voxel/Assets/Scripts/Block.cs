@@ -68,7 +68,7 @@ public class Block {
                 m++;
             }
 
-            mesh = MeshUtils.mergedMeshes(sideMeshes);
+            mesh = MeshUtils.MergeMeshes(sideMeshes);
             mesh.name = "Cube_0_0_0";
         }
     }

@@ -36,6 +36,10 @@ public class World : MonoBehaviour
     public PerlinGrapher surface;
     public static PerlinSettings stoneSettings;
     public PerlinGrapher stone;
+    public static PerlinSettings DiamondTopSettings;
+    public PerlinGrapher DiamondTop; 
+    public static PerlinSettings DiamondBottomSettings;
+    public PerlinGrapher DiamondBottom;
     
     // Start is called before the first frame update
     void Start()
@@ -45,6 +49,10 @@ public class World : MonoBehaviour
             surface.heightOffset, surface.probability);
         stoneSettings = new PerlinSettings(stone.heightScale, stone.scale, stone.octaves, 
             stone.heightOffset, stone.probability);
+        DiamondTopSettings = new PerlinSettings(DiamondTop.heightScale, DiamondTop.scale, DiamondTop.octaves, 
+            DiamondTop.heightOffset, DiamondTop.probability);
+        DiamondBottomSettings = new PerlinSettings(DiamondBottom.heightScale, DiamondBottom.scale, DiamondBottom.octaves, 
+            DiamondBottom.heightOffset, DiamondBottom.probability);
         StartCoroutine(BuildWorld()); 
     }
 

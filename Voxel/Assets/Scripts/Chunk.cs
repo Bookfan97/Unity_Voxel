@@ -36,18 +36,30 @@ public Material atlas;
                 World.surfaceSettings.heightScale, World.surfaceSettings.heightOffset);
             int stoneHeight = (int)MeshUtils.fBM(x, z, World.stoneSettings.octaves, World.stoneSettings.scale, 
                 World.stoneSettings.heightScale, World.stoneSettings.heightOffset);
+            int DiamondTopHeight = (int)MeshUtils.fBM(x, z, World.DiamondTopSettings.octaves, World.DiamondTopSettings.scale, 
+                World.DiamondTopSettings.heightScale, World.DiamondTopSettings.heightOffset);
+            int DiamondBottomHeight = (int)MeshUtils.fBM(x, z, World.DiamondBottomSettings.octaves, World.DiamondBottomSettings.scale, 
+                World.DiamondBottomSettings.heightScale, World.DiamondBottomSettings.heightOffset);
             if (surfaceHeight == y)
             {
                 chunkData[i] = MeshUtils.BlockType.GRASSSIDE;
+            }
+            else if (y < DiamondTopHeight && y > DiamondBottomHeight && UnityEngine.Random.Range(0.0f, 1.0f) <= World.DiamondTopSettings.probability)
+            {
+                chunkData[i] = MeshUtils.BlockType.DIAMOND;
             }
             else if (y <stoneHeight && UnityEngine.Random.Range(0.0f, 1.0f) <= World.stoneSettings.probability)
             {
                 chunkData[i] = MeshUtils.BlockType.STONE;   
             }
             else if(surfaceHeight > y)
+            {
                 chunkData[i] = MeshUtils.BlockType.DIRT;
+            }
             else
+            {
                 chunkData[i] = MeshUtils.BlockType.AIR;
+            }
         }
     }
 
