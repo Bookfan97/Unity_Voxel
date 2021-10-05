@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,20 +5,20 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class PerlinGrapher : MonoBehaviour
 {
-    public LineRenderer lineRenderer;
-    public float heightScale =2f, scale = 0.5f;
+    LineRenderer lr;
+    public float heightScale = 2;
+    public float scale = 0.5f;
     public int octaves = 1;
     public float heightOffset = 1;
-    
     // Start is called before the first frame update
     void Start()
     {
-        lineRenderer = this.GetComponent<LineRenderer>();
-        lineRenderer.positionCount = 100;
+        lr = this.GetComponent<LineRenderer>();
+        lr.positionCount = 100;
         Graph();
     }
 
-    float fBM(float x, float z)
+    /*float fBM(float x, float z)
     {
         float total = 0;
         float frequency = 1;
@@ -28,26 +27,24 @@ public class PerlinGrapher : MonoBehaviour
             total += Mathf.PerlinNoise(x * scale * frequency, z * scale * frequency) * heightScale;
             frequency *= 2;
         }
-
         return total;
-    }
-    
-    private void Graph()
+    }*/
+
+    void Graph()
     {
-        lineRenderer = this.GetComponent<LineRenderer>();
-        lineRenderer.positionCount = 100;
+        lr = this.GetComponent<LineRenderer>();
+        lr.positionCount = 100;
         int z = 11;
-        Vector3[] positions = new Vector3[lineRenderer.positionCount];
-        for (int x = 0; x < lineRenderer.positionCount; x++)
+        Vector3[] positions = new Vector3[lr.positionCount];
+        for (int x = 0; x < lr.positionCount; x++)
         {
-            float y = fBM(x, z) + heightOffset; 
-                //Mathf.PerlinNoise(x * scale, z* scale) * heightScale;
+            float y = MeshUtils.fBM(x, z, octaves, scale, heightScale,heightOffset);
             positions[x] = new Vector3(x, y, z);
         }
-        lineRenderer.SetPositions(positions);
+        lr.SetPositions(positions);
     }
 
-    private void OnValidate()
+    void OnValidate()
     {
         Graph();
     }
