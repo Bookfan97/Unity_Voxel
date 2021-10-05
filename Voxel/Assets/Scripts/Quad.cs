@@ -6,7 +6,7 @@ public class Quad
 {
     public Mesh mesh;
     // Start is called before the first frame update
-    public Quad(Block.BlockSide blockSide, Vector3 offset)
+    public Quad(Block.BlockSide blockSide, Vector3 offset, MeshUtils.BlockType blockType)
     {
         mesh = new Mesh();
         mesh.name = "ScriptedQuad";
@@ -14,10 +14,10 @@ public class Quad
         Vector3[] normals = new Vector3[4];
         Vector2[] uvs = new Vector2[4];
         int[] triangles = new int[6];
-        Vector2 uv00 = new Vector2(0.125f, 0.9375f);
-        Vector2 uv10 = new Vector2(.1875f, 0.9375f);
-        Vector2 uv01 = new Vector2(0.125f, 1);
-        Vector2 uv11 = new Vector2(.1875f, 1);
+        Vector2 uv00 = MeshUtils.blockUVs[(int)blockType, 0];
+        Vector2 uv10 = MeshUtils.blockUVs[(int)blockType, 1];
+        Vector2 uv01 = MeshUtils.blockUVs[(int)blockType, 2];
+        Vector2 uv11 = MeshUtils.blockUVs[(int)blockType, 3];
 
         Vector3 p0 = new Vector3(-0.5f, -0.5f, 0.5f) + offset;
         Vector3 p1 = new Vector3(0.5f, -0.5f, 0.5f) + offset;

@@ -20,12 +20,12 @@ public class Block : MonoBehaviour
         MeshRenderer meshRenderer = this.gameObject.AddComponent<MeshRenderer>();
         meshRenderer.material = atlas;
         Quad[] quads = new Quad[6];
-        quads[0] = new Quad(BlockSide.BOTTOM, offset);
-        quads[1] = new Quad(BlockSide.TOP, offset);
-        quads[2] = new Quad(BlockSide.LEFT, offset);
-        quads[3] = new Quad(BlockSide.RIGHT, offset);
-        quads[4] = new Quad(BlockSide.FRONT, offset);
-        quads[5] = new Quad(BlockSide.BACK, offset);
+        quads[0] = new Quad(BlockSide.BOTTOM, offset, MeshUtils.BlockType.SAND);
+        quads[1] = new Quad(BlockSide.TOP, offset, MeshUtils.BlockType.SAND);
+        quads[2] = new Quad(BlockSide.LEFT, offset, MeshUtils.BlockType.SAND);
+        quads[3] = new Quad(BlockSide.RIGHT, offset, MeshUtils.BlockType.SAND);
+        quads[4] = new Quad(BlockSide.FRONT, offset, MeshUtils.BlockType.SAND);
+        quads[5] = new Quad(BlockSide.BACK, offset, MeshUtils.BlockType.SAND);
         Mesh[] sidesMeshes = new Mesh[6];
         for (int i = 0; i < quads.Length; i++)
         {
