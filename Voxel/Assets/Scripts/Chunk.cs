@@ -14,12 +14,6 @@ public Material atlas;
     public int height = 2;
     public int depth = 2;
 
-    [Header("Perlin Settings")]
-    public float heightScale = 10;
-    public float scale = 0.001f;
-    public int octaves = 8;
-    public float heightOffset = -33;
-
     public Vector3 location;
 
     public Block[,,] blocks;
@@ -38,12 +32,19 @@ public Material atlas;
             int x = i % width + (int)location.x;
             int y = (i / width) % height + (int)location.y;
             int z = i / (width * height) + (int)location.z;
-            int surfaceHeight = (int)MeshUtils.fBM(x, z, octaves, scale, heightScale, heightOffset);
+            int surfaceHeight = (int)MeshUtils.fBM(x, z, World.surfaceSettings.octaves, World.surfaceSettings.scale, 
+                World.surfaceSettings.heightScale, World.surfaceSettings.heightOffset);
+            int stoneHeight = (int)MeshUtils.fBM(x, z, World.stoneSettings.octaves, World.stoneSettings.scale, 
+                World.stoneSettings.heightScale, World.stoneSettings.heightOffset);
             if (surfaceHeight == y)
             {
                 chunkData[i] = MeshUtils.BlockType.GRASSSIDE;
             }
-            else if( surfaceHeight > y)
+            else if (y <stoneHeight && UnityEngine.Random.Range(0.0f, 1.0f) <= World.stoneSettings.probability)
+            {
+                chunkData[i] = MeshUtils.BlockType.STONE;   
+            }
+            else if(surfaceHeight > y)
                 chunkData[i] = MeshUtils.BlockType.DIRT;
             else
                 chunkData[i] = MeshUtils.BlockType.AIR;

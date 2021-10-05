@@ -4,6 +4,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public struct PerlinSettings
+{
+    public float heightScale;
+    public float scale;
+    public int octaves;
+    public float heightOffset;
+    public float probability;
+
+    public PerlinSettings(float hs, float s, int o, float ho, float p)
+    {
+        heightScale = hs;
+        scale = s;
+        octaves = o;
+        heightOffset = ho;
+        probability = p;
+    }
+}
+
+
 public class World : MonoBehaviour
 {
     public static Vector3 worldDimensions = new Vector3(3, 3, 3);
@@ -13,11 +32,20 @@ public class World : MonoBehaviour
     public GameObject fpc;
     public Slider loadingBar;
 
+    public static PerlinSettings surfaceSettings;
+    public PerlinGrapher surface;
+    public static PerlinSettings stoneSettings;
+    public PerlinGrapher stone;
+    
     // Start is called before the first frame update
     void Start()
     {
         loadingBar.maxValue = worldDimensions.x * worldDimensions.y * worldDimensions.z;
-        StartCoroutine(BuildWorld());
+        surfaceSettings = new PerlinSettings(surface.heightScale, surface.scale, surface.octaves, 
+            surface.heightOffset, surface.probability);
+        stoneSettings = new PerlinSettings(stone.heightScale, stone.scale, stone.octaves, 
+            stone.heightOffset, stone.probability);
+        StartCoroutine(BuildWorld()); 
     }
 
     IEnumerator BuildWorld()
@@ -43,7 +71,8 @@ public class World : MonoBehaviour
         float xpos = (worldDimensions.x * chunkDimensions.x) / 2.0f;
         float zpos = (worldDimensions.z * chunkDimensions.z) / 2.0f;
         Chunk c = chunkPrefab.GetComponent<Chunk>();
-        float ypos = MeshUtils.fBM(xpos, zpos, c.octaves, c.scale, c.heightScale, c.heightOffset) + 10;
+        float ypos = MeshUtils.fBM(xpos, zpos, surfaceSettings.octaves, surfaceSettings.scale, surfaceSettings.heightScale,
+            stoneSettings.heightOffset) + 20;
         fpc.transform.position = new Vector3(xpos, ypos, zpos);
         loadingBar.gameObject.SetActive(false);
         fpc.SetActive(true);
