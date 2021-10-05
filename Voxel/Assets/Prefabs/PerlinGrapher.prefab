@@ -240,7 +240,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c74617a0849644438fd0b35453184bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 7702329000596501591}
   heightScale: 10
   scale: 0.14
   octaves: 3

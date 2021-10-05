@@ -15,17 +15,48 @@ public class Block {
         {
             List<Quad> quads = new List<Quad>();
             if (!HasSolidNeighbor((int)offset.x, (int)offset.y - 1, (int)offset.z))
-                quads.Add(new Quad(MeshUtils.BlockSide.BOTTOM, offset, type));
+            {
+                if (type == MeshUtils.BlockType.GRASSSIDE)
+                {
+                    quads.Add(new Quad(MeshUtils.BlockSide.BOTTOM, offset, MeshUtils.BlockType.DIRT));
+                }
+                else
+                {
+                    quads.Add(new Quad(MeshUtils.BlockSide.BOTTOM, offset, type));
+                }
+            }
+
             if (!HasSolidNeighbor((int)offset.x, (int)offset.y + 1, (int)offset.z))
-                quads.Add(new Quad(MeshUtils.BlockSide.TOP, offset, type));
+            {
+                if (type == MeshUtils.BlockType.GRASSSIDE)
+                {
+                    quads.Add(new Quad(MeshUtils.BlockSide.TOP, offset, MeshUtils.BlockType.GRASSTOP));
+                }
+                else
+                {
+                    quads.Add(new Quad(MeshUtils.BlockSide.TOP, offset, type));
+                }
+            }
+
             if (!HasSolidNeighbor((int)offset.x - 1, (int)offset.y, (int)offset.z))
+            {
                 quads.Add(new Quad(MeshUtils.BlockSide.LEFT, offset, type));
+            }
+
             if (!HasSolidNeighbor((int)offset.x + 1, (int)offset.y, (int)offset.z))
+            {
                 quads.Add(new Quad(MeshUtils.BlockSide.RIGHT, offset, type));
+            }
+
             if (!HasSolidNeighbor((int)offset.x, (int)offset.y, (int)offset.z + 1))
+            {
                 quads.Add(new Quad(MeshUtils.BlockSide.FRONT, offset, type));
+            }
+
             if (!HasSolidNeighbor((int)offset.x, (int)offset.y, (int)offset.z - 1))
+            {
                 quads.Add(new Quad(MeshUtils.BlockSide.BACK, offset, type));
+            }
 
             if (quads.Count == 0) return;
 
