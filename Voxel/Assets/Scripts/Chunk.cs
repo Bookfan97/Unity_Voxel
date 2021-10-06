@@ -42,6 +42,11 @@ public Material atlas;
                 World.DiamondBottomSettings.heightScale, World.DiamondBottomSettings.heightOffset);
             int digCave = (int)MeshUtils.fBM3D(x,y,z, World.CaveSettings.octaves, World.CaveSettings.scale, 
                 World.CaveSettings.heightScale, World.CaveSettings.heightOffset);
+            if (y == 0)
+            {
+                chunkData[i] = MeshUtils.BlockType.BEDROCK;
+                continue;
+            }
             if (surfaceHeight == y)
             {
                 chunkData[i] = MeshUtils.BlockType.GRASSSIDE;
