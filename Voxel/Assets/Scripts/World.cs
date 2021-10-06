@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +25,7 @@ public struct PerlinSettings
 
 public class World : MonoBehaviour
 {
-    public static Vector3Int worldDimensions = new Vector3Int(20, 5, 20);
+    public static Vector3Int worldDimensions = new Vector3Int(5, 5, 5);
     public static Vector3Int extraWorldDimensions = new Vector3Int(10, 5, 10);
     public static Vector3Int chunkDimensions = new Vector3Int(10, 10, 10);
     public GameObject chunkPrefab;
@@ -90,6 +91,35 @@ public class World : MonoBehaviour
         StartCoroutine(BuildWorld());
     }
 
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, 10))
+            {
+                Vector3 hitBlock = Vector3.zero;
+                if (Input.GetMouseButtonDown(0))
+                {
+                    hitBlock = hit.point - hit.normal / 2.0f;
+
+
+                    Chunk thisChunk = hit.collider.gameObject.GetComponent<Chunk>();
+                    int bx = (int)(Mathf.Round(hitBlock.x) - thisChunk.location.x);
+                    int by = (int)(Mathf.Round(hitBlock.y) - thisChunk.location.y);
+                    int bz = (int)(Mathf.Round(hitBlock.z) - thisChunk.location.z);
+                    int i = bx + chunkDimensions.x * (by + chunkDimensions.z * bz);
+                    thisChunk.chunkData[i] = MeshUtils.BlockType.AIR;
+                    DestroyImmediate(thisChunk.GetComponent<MeshFilter>());
+                    DestroyImmediate(thisChunk.GetComponent<MeshRenderer>());
+                    DestroyImmediate(thisChunk.GetComponent<Collider>());
+                    thisChunk.CreateChunk(chunkDimensions, thisChunk.location, false);
+                }
+            }
+        }
+    }
+
     void BuildChunkColumn(int x, int z, bool meshEnabled = true)
     {
         for (int y = 0; y < worldDimensions.y; y++)
@@ -136,10 +166,7 @@ public class World : MonoBehaviour
                 BuildChunkColumn(x * chunkDimensions.x, z * chunkDimensions.z, false);
                 yield return null;
             }
-
         }
-
-
     }
 
 
@@ -167,7 +194,7 @@ public class World : MonoBehaviour
         fpc.SetActive(true);
         lastBuildPosition = Vector3Int.CeilToInt(fpc.transform.position);
         StartCoroutine(BuildCoordinator());
-        StartCoroutine(UpdateWorld());
+        //StartCoroutine(UpdateWorld());
         StartCoroutine(BuildExtraWorld());
     }
 
@@ -234,5 +261,4 @@ public class World : MonoBehaviour
         buildQueue.Enqueue(BuildRecursiveWorld(x - chunkDimensions.x, z, nextrad));
         yield return null;
     }
-
 }
