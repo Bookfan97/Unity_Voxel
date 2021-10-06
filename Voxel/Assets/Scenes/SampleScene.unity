@@ -651,9 +651,9 @@ MonoBehaviour:
   loadingBar: {fileID: 548994569}
   surface: {fileID: 1561875297}
   stone: {fileID: 511985746}
-  DiamondTop: {fileID: 163190316}
-  DiamondBottom: {fileID: 541518541}
-  cave: {fileID: 6772488999132814766, guid: 036913c862ffeb54192aff506a5ffa0e, type: 3}
+  diamondT: {fileID: 163190316}
+  diamondB: {fileID: 541518541}
+  caves: {fileID: 6772488999132814766, guid: 036913c862ffeb54192aff506a5ffa0e, type: 3}
 --- !u!4 &205876683
 Transform:
   m_ObjectHideFlags: 0

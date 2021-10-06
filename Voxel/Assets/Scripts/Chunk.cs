@@ -8,7 +8,7 @@ using UnityEngine.Rendering;
 
 public class Chunk : MonoBehaviour
 {
-public Material atlas;
+    public Material atlas;
 
     public int width = 2;
     public int height = 2;
@@ -23,17 +23,18 @@ public Material atlas;
     //z = i / (WIDTH * HEIGHT )
     public MeshUtils.BlockType[] chunkData;
     public MeshRenderer meshRenderer;
-    private CalculateBlockTypes calculateBlockTypes;
-    private JobHandle jobHandle;
 
-    struct CalculateBlockTypes: IJobParallelFor
+    CalculateBlockTypes calculateBlockTypes;
+    JobHandle jobHandle;
+
+    struct CalculateBlockTypes : IJobParallelFor
     {
         public NativeArray<MeshUtils.BlockType> cData;
         public int width;
         public int height;
         public Vector3 location;
         public Unity.Mathematics.Random random;
-        
+
         public void Execute(int i)
         {
             int x = i % width + (int)location.x;
@@ -41,52 +42,54 @@ public Material atlas;
             int z = i / (width * height) + (int)location.z;
 
             random = new Unity.Mathematics.Random(1);
-            
-            int surfaceHeight = (int)MeshUtils.fBM(x, z, World.surfaceSettings.octaves, World.surfaceSettings.scale, 
-                World.surfaceSettings.heightScale, World.surfaceSettings.heightOffset);
-            int stoneHeight = (int)MeshUtils.fBM(x, z, World.stoneSettings.octaves, World.stoneSettings.scale, 
-                World.stoneSettings.heightScale, World.stoneSettings.heightOffset);
-            int DiamondTopHeight = (int)MeshUtils.fBM(x, z, World.DiamondTopSettings.octaves, World.DiamondTopSettings.scale, 
-                World.DiamondTopSettings.heightScale, World.DiamondTopSettings.heightOffset);
-            int DiamondBottomHeight = (int)MeshUtils.fBM(x, z, World.DiamondBottomSettings.octaves, World.DiamondBottomSettings.scale, 
-                World.DiamondBottomSettings.heightScale, World.DiamondBottomSettings.heightOffset);
-            int digCave = (int)MeshUtils.fBM3D(x,y,z, World.CaveSettings.octaves, World.CaveSettings.scale, 
-                World.CaveSettings.heightScale, World.CaveSettings.heightOffset);
-            
+
+            int surfaceHeight = (int)MeshUtils.fBM(x, z, World.surfaceSettings.octaves,
+                                                   World.surfaceSettings.scale, World.surfaceSettings.heightScale,
+                                                   World.surfaceSettings.heightOffset);
+
+            int stoneHeight = (int)MeshUtils.fBM(x, z, World.stoneSettings.octaves,
+                                                   World.stoneSettings.scale, World.stoneSettings.heightScale,
+                                                   World.stoneSettings.heightOffset);
+
+            int diamondTHeight = (int)MeshUtils.fBM(x, z, World.diamondTSettings.octaves,
+                                       World.diamondTSettings.scale, World.diamondTSettings.heightScale,
+                                       World.diamondTSettings.heightOffset);
+
+            int diamondBHeight = (int)MeshUtils.fBM(x, z, World.diamondBSettings.octaves,
+                           World.diamondBSettings.scale, World.diamondBSettings.heightScale,
+                           World.diamondBSettings.heightOffset);
+
+            int digCave = (int)MeshUtils.fBM3D(x, y, z, World.caveSettings.octaves,
+                           World.caveSettings.scale, World.caveSettings.heightScale,
+                           World.caveSettings.heightOffset);
+
             if (y == 0)
             {
                 cData[i] = MeshUtils.BlockType.BEDROCK;
                 return;
             }
-            
-            if (digCave < World.CaveSettings.probability)
+
+            if (digCave < World.caveSettings.probability)
             {
                 cData[i] = MeshUtils.BlockType.AIR;
                 return;
             }
-            
+
             if (surfaceHeight == y)
             {
                 cData[i] = MeshUtils.BlockType.GRASSSIDE;
             }
-            else if (y < DiamondTopHeight && y > DiamondBottomHeight && random.NextFloat(1) <= World.DiamondTopSettings.probability)
-            {
+            else if (y < diamondTHeight && y > diamondBHeight && random.NextFloat(1) <= World.diamondTSettings.probability)
                 cData[i] = MeshUtils.BlockType.DIAMOND;
-            }
-            else if (y <stoneHeight && random.NextFloat(1) <= World.stoneSettings.probability)
-            {
-                cData[i] = MeshUtils.BlockType.STONE;   
-            }
-            else if(surfaceHeight > y)
-            {
+            else if (y < stoneHeight && random.NextFloat(1) <= World.stoneSettings.probability)
+                cData[i] = MeshUtils.BlockType.STONE;
+            else if (y < surfaceHeight)
                 cData[i] = MeshUtils.BlockType.DIRT;
-            }
             else
-            {
                 cData[i] = MeshUtils.BlockType.AIR;
-            }
         }
     }
+
     void BuildChunk()
     {
         int blockCount = width * depth * height;
@@ -94,7 +97,10 @@ public Material atlas;
         NativeArray<MeshUtils.BlockType> blockTypes = new NativeArray<MeshUtils.BlockType>(chunkData, Allocator.Persistent);
         calculateBlockTypes = new CalculateBlockTypes()
         {
-            cData = blockTypes, width = width, height = height, location = location
+            cData = blockTypes,
+            width = width,
+            height = height,
+            location = location
         };
 
         jobHandle = calculateBlockTypes.Schedule(chunkData.Length, 64);
@@ -115,8 +121,6 @@ public Material atlas;
         width = (int) dimensions.x;
         height = (int)dimensions.y;
         depth = (int)dimensions.z;
-
-
 
         MeshFilter mf = this.gameObject.AddComponent<MeshFilter>();
         MeshRenderer mr = this.gameObject.AddComponent<MeshRenderer>();
@@ -168,7 +172,7 @@ public Material atlas;
 
         var handle = jobs.Schedule(inputMeshes.Count, 4);
         var newMesh = new Mesh();
-        newMesh.name = $"Chunk_{location.x}_{location.y}_{location.z}";
+        newMesh.name = "Chunk_" + location.x + "_" + location.y + "_" + location.z;
         var sm = new SubMeshDescriptor(0, triStart, MeshTopology.Triangles);
         sm.firstVertex = 0;
         sm.vertexCount = vertexStart;
