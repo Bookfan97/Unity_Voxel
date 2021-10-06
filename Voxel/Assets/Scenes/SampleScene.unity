@@ -191,6 +191,10 @@ PrefabInstance:
       value: Surface
       objectReference: {fileID: 0}
     - target: {fileID: 7702329000596501591, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7702329000596501591, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 052c53e43f88247428b654d993dc671a, type: 2}
@@ -1027,6 +1031,10 @@ PrefabInstance:
       value: DiamondBottom
       objectReference: {fileID: 0}
     - target: {fileID: 7702329000596501591, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7702329000596501591, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: d4f0111d33cb4c243add3fade957a48f, type: 2}
@@ -1502,6 +1510,10 @@ PrefabInstance:
     - target: {fileID: 7702329000596501590, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
       propertyPath: m_Name
       value: Stone
+      objectReference: {fileID: 0}
+    - target: {fileID: 7702329000596501591, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7702329000596501591, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -2307,6 +2319,10 @@ PrefabInstance:
     - target: {fileID: 7702329000596501590, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
       propertyPath: m_Name
       value: DiamondTop
+      objectReference: {fileID: 0}
+    - target: {fileID: 7702329000596501591, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7702329000596501591, guid: eff6541bf94c38c4aa9245aaea5f73ee, type: 3}
       propertyPath: m_Materials.Array.data[0]
