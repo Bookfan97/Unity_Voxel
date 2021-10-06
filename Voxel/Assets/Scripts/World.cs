@@ -25,7 +25,7 @@ public struct PerlinSettings
 
 public class World : MonoBehaviour
 {
-    public static Vector3 worldDimensions = new Vector3(3, 3, 3);
+    public static Vector3 worldDimensions = new Vector3(4, 4, 4);
     public static Vector3 chunkDimensions = new Vector3(10, 10, 10);
     public GameObject chunkPrefab;
     public GameObject mCamera;
@@ -40,6 +40,8 @@ public class World : MonoBehaviour
     public PerlinGrapher DiamondTop; 
     public static PerlinSettings DiamondBottomSettings;
     public PerlinGrapher DiamondBottom;
+    public static PerlinSettings CaveSettings;
+    public Perlin3DGrapher cave;
     
     // Start is called before the first frame update
     void Start()
@@ -53,6 +55,8 @@ public class World : MonoBehaviour
             DiamondTop.heightOffset, DiamondTop.probability);
         DiamondBottomSettings = new PerlinSettings(DiamondBottom.heightScale, DiamondBottom.scale, DiamondBottom.octaves, 
             DiamondBottom.heightOffset, DiamondBottom.probability);
+        CaveSettings = new PerlinSettings(cave.heightScale, cave.scale, cave.octaves, cave.heightOffset, 
+            cave.DrawCutOff);
         StartCoroutine(BuildWorld()); 
     }
 

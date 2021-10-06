@@ -40,6 +40,8 @@ public Material atlas;
                 World.DiamondTopSettings.heightScale, World.DiamondTopSettings.heightOffset);
             int DiamondBottomHeight = (int)MeshUtils.fBM(x, z, World.DiamondBottomSettings.octaves, World.DiamondBottomSettings.scale, 
                 World.DiamondBottomSettings.heightScale, World.DiamondBottomSettings.heightOffset);
+            int digCave = (int)MeshUtils.fBM3D(x,y,z, World.CaveSettings.octaves, World.CaveSettings.scale, 
+                World.CaveSettings.heightScale, World.CaveSettings.heightOffset);
             if (surfaceHeight == y)
             {
                 chunkData[i] = MeshUtils.BlockType.GRASSSIDE;
@@ -57,6 +59,11 @@ public Material atlas;
                 chunkData[i] = MeshUtils.BlockType.DIRT;
             }
             else
+            {
+                chunkData[i] = MeshUtils.BlockType.AIR;
+            }
+
+            if (digCave < World.CaveSettings.probability)
             {
                 chunkData[i] = MeshUtils.BlockType.AIR;
             }
