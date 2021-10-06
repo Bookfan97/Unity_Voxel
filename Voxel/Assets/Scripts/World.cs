@@ -118,6 +118,45 @@ public class World : MonoBehaviour
                     int bx = (int)(Mathf.Round(hitBlock.x) - thisChunk.location.x);
                     int by = (int)(Mathf.Round(hitBlock.y) - thisChunk.location.y);
                     int bz = (int)(Mathf.Round(hitBlock.z) - thisChunk.location.z);
+
+                    Vector3Int neighbor;
+                    if (bx == chunkDimensions.x)
+                    {
+                        neighbor = new Vector3Int((int)(thisChunk.location.x + chunkDimensions.x), (int)thisChunk.location.y, (int)thisChunk.location.z);
+                        thisChunk = chunks[neighbor];
+                        bx = 0;
+                    }
+                    else if (bx == -1)
+                    {
+                        neighbor = new Vector3Int((int)(thisChunk.location.x - chunkDimensions.x), (int)thisChunk.location.y, (int)thisChunk.location.z);
+                        thisChunk = chunks[neighbor];
+                        bx = chunkDimensions.x - 1;
+                    }
+                    else if (by == chunkDimensions.y)
+                    {
+                        neighbor = new Vector3Int((int)(thisChunk.location.x), (int)thisChunk.location.y + chunkDimensions.y, (int)thisChunk.location.z);
+                        thisChunk = chunks[neighbor];
+                        by = 0;
+                    }
+                    else if (by == -1)
+                    {
+                        neighbor = new Vector3Int((int)(thisChunk.location.x), (int)thisChunk.location.y - chunkDimensions.y, (int)thisChunk.location.z);
+                        thisChunk = chunks[neighbor];
+                        by = chunkDimensions.x - 1;
+                    }
+                    else if (bz == chunkDimensions.z)
+                    {
+                        neighbor = new Vector3Int((int)(thisChunk.location.x), (int)thisChunk.location.y, (int)thisChunk.location.z + chunkDimensions.z);
+                        thisChunk = chunks[neighbor];
+                        bz = 0;
+                    }
+                    else if (bz == -1)
+                    {
+                        neighbor = new Vector3Int((int)(thisChunk.location.x), (int)thisChunk.location.y, (int)thisChunk.location.z  - chunkDimensions.z);
+                        thisChunk = chunks[neighbor];
+                        bz = chunkDimensions.x - 1;
+                    }
+
                     int i = bx + chunkDimensions.x * (by + chunkDimensions.z * bz);
                     if (Input.GetMouseButtonDown(0))
                     {
