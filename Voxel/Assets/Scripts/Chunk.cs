@@ -22,7 +22,8 @@ public Material atlas;
     //y = (i / WIDTH) % HEIGHT
     //z = i / (WIDTH * HEIGHT )
     public MeshUtils.BlockType[] chunkData;
-
+    public MeshRenderer meshRenderer;
+    
     void BuildChunk()
     {
         int blockCount = width * depth * height;
@@ -92,6 +93,7 @@ public Material atlas;
 
         MeshFilter mf = this.gameObject.AddComponent<MeshFilter>();
         MeshRenderer mr = this.gameObject.AddComponent<MeshRenderer>();
+        meshRenderer = mr;
         mr.material = atlas;
         blocks = new Block[width, height, depth];
         BuildChunk();
