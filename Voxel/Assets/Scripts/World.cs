@@ -91,6 +91,12 @@ public class World : MonoBehaviour
         StartCoroutine(BuildWorld());
     }
 
+    MeshUtils.BlockType buildType;
+    public void SetBuildType(int type)
+    {
+        buildType = (MeshUtils.BlockType) type;
+    }
+    
     void Update()
     {
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
@@ -103,19 +109,28 @@ public class World : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     hitBlock = hit.point - hit.normal / 2.0f;
-
-
-                    Chunk thisChunk = hit.collider.gameObject.GetComponent<Chunk>();
+                }
+                else
+                {
+                    hitBlock = hit.point + hit.normal / 2.0f;
+                }
+                Chunk thisChunk = hit.collider.gameObject.GetComponent<Chunk>();
                     int bx = (int)(Mathf.Round(hitBlock.x) - thisChunk.location.x);
                     int by = (int)(Mathf.Round(hitBlock.y) - thisChunk.location.y);
                     int bz = (int)(Mathf.Round(hitBlock.z) - thisChunk.location.z);
                     int i = bx + chunkDimensions.x * (by + chunkDimensions.z * bz);
-                    thisChunk.chunkData[i] = MeshUtils.BlockType.AIR;
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        thisChunk.chunkData[i] = MeshUtils.BlockType.AIR;
+                    }
+                    else
+                    {
+                        thisChunk.chunkData[i] = buildType;
+                    }
                     DestroyImmediate(thisChunk.GetComponent<MeshFilter>());
                     DestroyImmediate(thisChunk.GetComponent<MeshRenderer>());
                     DestroyImmediate(thisChunk.GetComponent<Collider>());
                     thisChunk.CreateChunk(chunkDimensions, thisChunk.location, false);
-                }
             }
         }
     }
