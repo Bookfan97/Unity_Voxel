@@ -9,6 +9,7 @@ public static class MeshUtils {
         CRACK1, CRACK2, CRACK3, CRACK4, AIR
     };
 
+    public static int[] blockTypeHealth = {2,2,1,1,4,3,4,-1,3,4,-1,-1,-1,-1,-1,-1};
     public enum BlockSide { BOTTOM, TOP, LEFT, RIGHT, FRONT, BACK };
 
     public static Vector2[,] blockUVs = {
