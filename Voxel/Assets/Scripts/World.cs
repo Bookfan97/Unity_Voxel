@@ -48,9 +48,9 @@ public class World : MonoBehaviour
     public static PerlinSettings caveSettings;
     public Perlin3DGrapher caves;
 
-    HashSet<Vector3Int> chunkChecker = new HashSet<Vector3Int>();
-    HashSet<Vector2Int> chunkColumns = new HashSet<Vector2Int>();
-    Dictionary<Vector3Int, Chunk> chunks = new Dictionary<Vector3Int, Chunk>();
+    public HashSet<Vector3Int> chunkChecker = new HashSet<Vector3Int>();
+    public HashSet<Vector2Int> chunkColumns = new HashSet<Vector2Int>();
+    public Dictionary<Vector3Int, Chunk> chunks = new Dictionary<Vector3Int, Chunk>();
 
     Vector3Int lastBuildPosition;
     int drawRadius = 3;
@@ -67,6 +67,10 @@ public class World : MonoBehaviour
         }
     }
 
+    public void SaveWorld()
+    {
+        FileSaver.Save(this);
+    }
 
     // Start is called before the first frame update
     void Start()

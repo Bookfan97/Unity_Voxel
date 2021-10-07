@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 [Serializable]
@@ -59,5 +61,31 @@ public class WorldData
 
 public static class FileSaver
 {
+    private static WorldData wd;
+    static string BuildFileName()
+    {
+        return Application.persistentDataPath + "/saveData/World_" + 
+            World.chunkDimensions.x + "_" + 
+            World.chunkDimensions.y + "_" + 
+            World.chunkDimensions.z + "_" +
+            World.worldDimensions.x + "_" + 
+            World.worldDimensions.y + "_" +
+            World.worldDimensions.z +".dat";
+    }
 
+    public static void Save(World world)
+    {
+        string filename = BuildFileName();
+        if (!File.Exists(filename))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(filename));
+        }
+
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(filename, FileMode.OpenOrCreate);
+        wd = new WorldData(world.chunkChecker, world.chunkColumns, world.chunks, world.fpc.transform.position);
+        bf.Serialize(file, wd);
+        file.Close();
+        Debug.Log("Saving World to file: "+filename);
+    }
 }
