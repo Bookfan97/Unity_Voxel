@@ -160,6 +160,11 @@ public class World : MonoBehaviour
                     int i = bx + chunkDimensions.x * (by + chunkDimensions.z * bz);
                     if (Input.GetMouseButtonDown(0))
                     {
+                        if (thisChunk.healthData[i] == MeshUtils.BlockType.NOCRACK)
+                        {
+                            StartCoroutine(HealBlock(thisChunk, i));
+                        }
+                        
                         thisChunk.healthData[i]++;
                         if (MeshUtils.blockTypeHealth[(int)thisChunk.chunkData[i]] != -1)
                         {
@@ -176,14 +181,28 @@ public class World : MonoBehaviour
                         thisChunk.chunkData[i] = buildType;
                         thisChunk.healthData[i] = MeshUtils.BlockType.NOCRACK;
                     }
-                    DestroyImmediate(thisChunk.GetComponent<MeshFilter>());
-                    DestroyImmediate(thisChunk.GetComponent<MeshRenderer>());
-                    DestroyImmediate(thisChunk.GetComponent<Collider>());
-                    thisChunk.CreateChunk(chunkDimensions, thisChunk.location, false);
+                    RedrawChunk(thisChunk);
             }
         }
     }
 
+    private static void RedrawChunk(Chunk thisChunk)
+    {
+        DestroyImmediate(thisChunk.GetComponent<MeshFilter>());
+        DestroyImmediate(thisChunk.GetComponent<MeshRenderer>());
+        DestroyImmediate(thisChunk.GetComponent<Collider>());
+        thisChunk.CreateChunk(chunkDimensions, thisChunk.location, false);
+    }
+
+    private WaitForSeconds threeSeconds = new WaitForSeconds(3);
+    public IEnumerator HealBlock(Chunk c, int blockIndex)
+    {
+        yield return threeSeconds;
+        if (c.chunkData[blockIndex] != MeshUtils.BlockType.AIR)
+        {
+            c.healthData[blockIndex] = MeshUtils.BlockType.NOCRACK;
+        }
+    }
     void BuildChunkColumn(int x, int z, bool meshEnabled = true)
     {
         for (int y = 0; y < worldDimensions.y; y++)
