@@ -1,20 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
 public class Perlin3DGrapher : MonoBehaviour
 {
-    Vector3 dimensions = new Vector3(10, 10, 10);
+    private Vector3 dimensions = new Vector3(10, 10, 10);
     public float heightScale = 2;
+
     [Range(0.0f, 1.0f)]
     public float scale = 0.5f;
+
     public int octaves = 1;
     public float heightOffset = 1;
+
     [Range(0.0f, 10.0f)]
     public float DrawCutOff = 1;
 
-    void CreateCubes()
+    private void CreateCubes()
     {
         for (int z = 0; z < dimensions.z; z++)
         {
@@ -31,7 +32,7 @@ public class Perlin3DGrapher : MonoBehaviour
         }
     }
 
-    void Graph()
+    private void Graph()
     {
         //destroy existing cubes
         MeshRenderer[] cubes = this.GetComponentsInChildren<MeshRenderer>();
@@ -56,7 +57,7 @@ public class Perlin3DGrapher : MonoBehaviour
         }
     }
 
-    void OnValidate()
+    private void OnValidate()
     {
         Graph();
     }

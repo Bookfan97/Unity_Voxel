@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using Unity.Burst;
-using Unity.Mathematics;
 using Unity.Collections;
 using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -17,18 +17,20 @@ public class Chunk : MonoBehaviour
     public Vector3 location;
 
     public Block[,,] blocks;
+
     //Flat[x + WIDTH * (y + DEPTH * z)] = Original[x, y, z]
     //x = i % WIDTH
     //y = (i / WIDTH) % HEIGHT
     //z = i / (WIDTH * HEIGHT )
     public MeshUtils.BlockType[] chunkData;
+
     public MeshUtils.BlockType[] healthData;
     public MeshRenderer meshRenderer;
 
-    CalculateBlockTypes calculateBlockTypes;
-    JobHandle jobHandle;
+    private CalculateBlockTypes calculateBlockTypes;
+    private JobHandle jobHandle;
 
-    struct CalculateBlockTypes : IJobParallelFor
+    private struct CalculateBlockTypes : IJobParallelFor
     {
         public NativeArray<MeshUtils.BlockType> cData;
         public NativeArray<MeshUtils.BlockType> hData;
@@ -94,7 +96,7 @@ public class Chunk : MonoBehaviour
         }
     }
 
-    void BuildChunk()
+    private void BuildChunk()
     {
         int blockCount = width * depth * height;
         chunkData = new MeshUtils.BlockType[blockCount];
@@ -119,15 +121,14 @@ public class Chunk : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-
     }
 
     public void CreateChunk(Vector3 dimensions, Vector3 position, bool rebuildBlocks = true)
     {
         location = position;
-        width = (int) dimensions.x;
+        width = (int)dimensions.x;
         height = (int)dimensions.y;
         depth = (int)dimensions.z;
 
@@ -136,7 +137,7 @@ public class Chunk : MonoBehaviour
         meshRenderer = mr;
         mr.material = atlas;
         blocks = new Block[width, height, depth];
-        if(rebuildBlocks)
+        if (rebuildBlocks)
             BuildChunk();
 
         var inputMeshes = new List<Mesh>();
@@ -147,7 +148,6 @@ public class Chunk : MonoBehaviour
         var jobs = new ProcessMeshDataJob();
         jobs.vertexStart = new NativeArray<int>(meshCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
         jobs.triStart = new NativeArray<int>(meshCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-
 
         for (int z = 0; z < depth; z++)
         {
@@ -204,7 +204,7 @@ public class Chunk : MonoBehaviour
     }
 
     [BurstCompile]
-    struct ProcessMeshDataJob : IJobParallelFor
+    private struct ProcessMeshDataJob : IJobParallelFor
     {
         [ReadOnly] public Mesh.MeshDataArray meshData;
         public Mesh.MeshData outputMesh;
@@ -268,13 +268,11 @@ public class Chunk : MonoBehaviour
                     outputTris[i + tStart] = vStart + idx;
                 }
             }
-
         }
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
     }
 }

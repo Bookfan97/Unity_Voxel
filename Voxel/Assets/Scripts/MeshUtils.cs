@@ -1,15 +1,17 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VertexData = System.Tuple<UnityEngine.Vector3, UnityEngine.Vector3, UnityEngine.Vector2, UnityEngine.Vector2>;
 
-public static class MeshUtils {
-    public enum BlockType {
+public static class MeshUtils
+{
+    public enum BlockType
+    {
         GRASSTOP, GRASSSIDE, DIRT, WATER, STONE, SAND, GOLD, BEDROCK, REDSTONE, DIAMOND, NOCRACK,
         CRACK1, CRACK2, CRACK3, CRACK4, AIR
     };
 
-    public static int[] blockTypeHealth = {2,2,1,1,4,3,4,-1,3,4,-1,-1,-1,-1,-1,-1};
+    public static int[] blockTypeHealth = { 2, 2, 1, 1, 4, 3, 4, -1, 3, 4, -1, -1, -1, -1, -1, -1 };
+
     public enum BlockSide { BOTTOM, TOP, LEFT, RIGHT, FRONT, BACK };
 
     public static Vector2[,] blockUVs = {
@@ -69,8 +71,8 @@ public static class MeshUtils {
         return (XY + YZ + XZ + YX + ZY + ZX) / 6.0f;
     }
 
-
-    public static Mesh MergeMeshes(Mesh[] meshes) {
+    public static Mesh MergeMeshes(Mesh[] meshes)
+    {
         Mesh mesh = new Mesh();
 
         Dictionary<VertexData, int> pointsOrder = new Dictionary<VertexData, int>();
@@ -88,16 +90,17 @@ public static class MeshUtils {
                 Vector2 u = meshes[i].uv[j];
                 Vector2 u2 = meshes[i].uv2[j];
                 VertexData p = new VertexData(v, n, u, u2);
-                if (!pointsHash.Contains(p)) {
+                if (!pointsHash.Contains(p))
+                {
                     pointsOrder.Add(p, pIndex);
                     pointsHash.Add(p);
 
                     pIndex++;
                 }
-
             }
 
-            for (int t = 0; t < meshes[i].triangles.Length; t++) {
+            for (int t = 0; t < meshes[i].triangles.Length; t++)
+            {
                 int triPoint = meshes[i].triangles[t];
                 Vector3 v = meshes[i].vertices[triPoint];
                 Vector3 n = meshes[i].normals[triPoint];
@@ -118,13 +121,15 @@ public static class MeshUtils {
         return mesh;
     }
 
-    public static void ExtractArrays(Dictionary<VertexData, int> list, Mesh mesh) {
+    public static void ExtractArrays(Dictionary<VertexData, int> list, Mesh mesh)
+    {
         List<Vector3> verts = new List<Vector3>();
         List<Vector3> norms = new List<Vector3>();
         List<Vector2> uvs = new List<Vector2>();
         List<Vector2> uvs2 = new List<Vector2>();
 
-        foreach (VertexData v in list.Keys) {
+        foreach (VertexData v in list.Keys)
+        {
             verts.Add(v.Item1);
             norms.Add(v.Item2);
             uvs.Add(v.Item3);
@@ -135,5 +140,4 @@ public static class MeshUtils {
         mesh.uv = uvs.ToArray();
         mesh.uv2 = uvs2.ToArray();
     }
-
 }

@@ -1,9 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 
 [Serializable]
 public class WorldData
@@ -21,7 +20,9 @@ public class WorldData
     public int fpcY;
     public int fpcZ;
 
-    public WorldData() { }
+    public WorldData()
+    {
+    }
 
     public WorldData(HashSet<Vector3Int> cc, HashSet<Vector2Int> cCols, Dictionary<Vector3Int, Chunk> chks, Vector3 fpc)
     {
@@ -65,12 +66,11 @@ public class WorldData
     }
 }
 
-
 public static class FileSaver
 {
     private static WorldData wd;
 
-    static string BuildFileName()
+    private static string BuildFileName()
     {
         return Application.persistentDataPath + "/savedata/World_" +
                                 World.chunkDimensions.x + "_" +

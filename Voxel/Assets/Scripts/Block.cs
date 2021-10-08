@@ -1,11 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block {
-
+public class Block
+{
     public Mesh mesh;
-    Chunk parentChunk;
+    private Chunk parentChunk;
 
     public Block(Vector3 offset, MeshUtils.BlockType type, Chunk chunk, MeshUtils.BlockType htype)
     {
@@ -25,12 +24,11 @@ public class Block {
 
             if (!HasSolidNeighbour((int)blockLocalPos.x, (int)blockLocalPos.y + 1, (int)blockLocalPos.z))
             {
-                if(type == MeshUtils.BlockType.GRASSSIDE) 
+                if (type == MeshUtils.BlockType.GRASSSIDE)
                     quads.Add(new Quad(MeshUtils.BlockSide.TOP, offset, MeshUtils.BlockType.GRASSTOP, htype));
                 else
                     quads.Add(new Quad(MeshUtils.BlockSide.TOP, offset, type, htype));
             }
-
 
             if (!HasSolidNeighbour((int)blockLocalPos.x - 1, (int)blockLocalPos.y, (int)blockLocalPos.z))
                 quads.Add(new Quad(MeshUtils.BlockSide.LEFT, offset, type, htype));
@@ -64,9 +62,9 @@ public class Block {
         {
             return false;
         }
-        if(parentChunk.chunkData[x + parentChunk.width * (y + parentChunk.depth * z)] == MeshUtils.BlockType.AIR
+        if (parentChunk.chunkData[x + parentChunk.width * (y + parentChunk.depth * z)] == MeshUtils.BlockType.AIR
             || parentChunk.chunkData[x + parentChunk.width * (y + parentChunk.depth * z)] == MeshUtils.BlockType.WATER)
-        return false;
+            return false;
         return true;
     }
 }
