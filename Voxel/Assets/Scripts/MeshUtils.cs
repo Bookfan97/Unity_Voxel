@@ -1,11 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Jobs;
-using Unity.Burst;
-using Unity.Mathematics;
-using Unity.Collections;
-using UnityEngine.Rendering;
 using VertexData = System.Tuple<UnityEngine.Vector3, UnityEngine.Vector3, UnityEngine.Vector2, UnityEngine.Vector2>;
 
 public static class MeshUtils {
@@ -62,17 +57,20 @@ public static class MeshUtils {
                                  new Vector2(0.1875f,0.0625f), new Vector2(0.25f,0.0625f)}
     };
 
-    public static float fBM(float x, float z, int octaves, float scale, float heightScale, float heightOffset) {
+    public static float fBM(float x, float z, int octaves, float scale, float heightScale, float heightOffset)
+    {
         float total = 0;
         float frequency = 1;
-        for (int i = 0; i < octaves; i++) {
+        for (int i = 0; i < octaves; i++)
+        {
             total += Mathf.PerlinNoise(x * scale * frequency, z * scale * frequency) * heightScale;
             frequency *= 2;
         }
         return total + heightOffset;
     }
 
-    public static float fBM3D(float x, float y, float z, int octaves, float scale, float heightScale, float heightOffset) {
+    public static float fBM3D(float x, float y, float z, int octaves, float scale, float heightScale, float heightOffset)
+    {
         float XY = fBM(x, y, octaves, scale, heightScale, heightOffset);
         float YZ = fBM(y, z, octaves, scale, heightScale, heightOffset);
         float XZ = fBM(x, z, octaves, scale, heightScale, heightOffset);

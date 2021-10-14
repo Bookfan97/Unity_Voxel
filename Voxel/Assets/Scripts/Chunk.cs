@@ -92,7 +92,9 @@ public class Chunk : MonoBehaviour
                     cData[i] = MeshUtils.BlockType.WOODBASE;
                 }
                 else
+                {
                     cData[i] = MeshUtils.BlockType.GRASSSIDE;
+                }
             }
             else if (y < diamondTHeight && y > diamondBHeight && random.NextFloat(1) <= World.diamondTSettings.probability)
                 cData[i] = MeshUtils.BlockType.DIAMOND;
