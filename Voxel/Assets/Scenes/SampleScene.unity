@@ -862,7 +862,7 @@ MonoBehaviour:
   diamondT: {fileID: 163190316}
   diamondB: {fileID: 541518541}
   caves: {fileID: 6772488999132814766, guid: 036913c862ffeb54192aff506a5ffa0e, type: 3}
-  tree: {fileID: 6772488999132814766, guid: 036913c862ffeb54192aff506a5ffa0e, type: 3}
+  tree: {fileID: 6772488999132814766, guid: e16d5440ae8ffff41b581274f3f5e7ee, type: 3}
 --- !u!4 &205876683
 Transform:
   m_ObjectHideFlags: 0

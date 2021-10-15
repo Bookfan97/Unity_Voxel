@@ -140,6 +140,66 @@ public class Chunk : MonoBehaviour
         blockTypes.Dispose();
         healthTypes.Dispose();
         RandomArray.Dispose();
+
+        BuildTrees();
+    }
+
+    (Vector3Int, MeshUtils.BlockType)[] treeDesign = new (Vector3Int, MeshUtils.BlockType)[]
+    {
+        (new Vector3Int(-1,2,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,2,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(1,2,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(-1,3,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,3,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(1,3,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(-1,4,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,4,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(1,4,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,5,-1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,0,0), MeshUtils.BlockType.WOOD),
+        (new Vector3Int(0,1,0), MeshUtils.BlockType.WOOD),
+        (new Vector3Int(-1,2,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,2,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(1,2,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(-1,3,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,3,0), MeshUtils.BlockType.WOOD),
+        (new Vector3Int(1,3,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(-1,4,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,4,0), MeshUtils.BlockType.WOOD),
+        (new Vector3Int(1,4,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(-1,5,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,5,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(1,5,0), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(-1,2,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,2,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(1,2,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(-1,3,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,3,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(1,3,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(-1,4,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,4,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(1,4,1), MeshUtils.BlockType.LEAVES),
+        (new Vector3Int(0,5,1), MeshUtils.BlockType.LEAVES)
+    };
+    
+    void BuildTrees()
+    {
+        for (int i = 0; i < chunkData.Length; i++)
+        {
+            if (chunkData[i] == MeshUtils.BlockType.WOODBASE)
+            {
+                foreach (var v in treeDesign)
+                {
+                    Vector3Int blockPos = World.FromFlat(i) + v.Item1;
+                    int bIndex = World.ToFlat(blockPos);
+                    if (bIndex >= 0 && bIndex < chunkData.Length)
+                    {
+                        chunkData[bIndex] = v.Item2;
+                        healthData[bIndex] = MeshUtils.BlockType.NOCRACK;
+                    }
+                }
+            }
+        }
     }
 
     // Start is called before the first frame update
