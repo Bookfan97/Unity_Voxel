@@ -1,8 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 [Serializable]
 public class WorldData
@@ -20,9 +21,7 @@ public class WorldData
     public int fpcY;
     public int fpcZ;
 
-    public WorldData()
-    {
-    }
+    public WorldData() { }
 
     public WorldData(HashSet<Vector3Int> cc, HashSet<Vector2Int> cCols, Dictionary<Vector3Int, Chunk> chks, Vector3 fpc)
     {
@@ -56,7 +55,7 @@ public class WorldData
                 allChunkData[index] = (int)bt;
                 index++;
             }
-            chunkVisibility[vIndex] = ch.Value.meshRenderer.enabled;
+            chunkVisibility[vIndex] = ch.Value.meshRendererSolid.enabled;
             vIndex++;
         }
 
@@ -66,11 +65,12 @@ public class WorldData
     }
 }
 
+
 public static class FileSaver
 {
     private static WorldData wd;
 
-    private static string BuildFileName()
+    static string BuildFileName()
     {
         return Application.persistentDataPath + "/savedata/World_" +
                                 World.chunkDimensions.x + "_" +

@@ -5,11 +5,11 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 using UnityEngine.Rendering;
-using System.Collections.Concurrent;
 
 public class Chunk : MonoBehaviour
 {
     public Material atlas;
+    public Material fluid;
 
     public int width = 2;
     public int height = 2;
@@ -24,7 +24,10 @@ public class Chunk : MonoBehaviour
     //z = i / (WIDTH * HEIGHT )
     public MeshUtils.BlockType[] chunkData;
     public MeshUtils.BlockType[] healthData;
-    public MeshRenderer meshRenderer;
+    public MeshRenderer meshRendererSolid;
+    public MeshRenderer meshRendererFluid;
+    public GameObject solidMesh;
+    public GameObject fluidMesh;
 
     CalculateBlockTypes calculateBlockTypes;
     JobHandle jobHandle;
@@ -71,6 +74,10 @@ public class Chunk : MonoBehaviour
                World.treeSettings.scale, World.treeSettings.heightScale,
                World.treeSettings.heightOffset);
 
+            int dessertBiome = (int)MeshUtils.fBM3D(x, y, z, World.biomeSettings.octaves,
+                World.biomeSettings.scale, World.biomeSettings.heightScale,
+                World.biomeSettings.heightOffset);
+
             hData[i] = MeshUtils.BlockType.NOCRACK;
 
             if (y == 0)
@@ -85,16 +92,26 @@ public class Chunk : MonoBehaviour
                 return;
             }
 
-            if (surfaceHeight == y)
+            if (surfaceHeight == y && y >= 20) //above water
             {
-                if (plantTree < World.treeSettings.probability && random.NextFloat(1) <= 0.1)
+                if (dessertBiome < World.biomeSettings.probability)
                 {
-                    cData[i] = MeshUtils.BlockType.WOODBASE;
+                    cData[i] = MeshUtils.BlockType.SAND;
+                    if (random.NextFloat(1) <= 0.1)
+                    {
+                        cData[i] = MeshUtils.BlockType.CACTUS;
+                    }
+                }
+                else if (plantTree < World.treeSettings.probability)
+                {
+                    cData[i] = MeshUtils.BlockType.FOREST;
+                    if (random.NextFloat(1) <= 0.1)
+                    {
+                        cData[i] = MeshUtils.BlockType.WOODBASE;
+                    }
                 }
                 else
-                {
                     cData[i] = MeshUtils.BlockType.GRASSSIDE;
-                }
             }
             else if (y < diamondTHeight && y > diamondBHeight && random.NextFloat(1) <= World.diamondTSettings.probability)
                 cData[i] = MeshUtils.BlockType.DIAMOND;
@@ -102,6 +119,8 @@ public class Chunk : MonoBehaviour
                 cData[i] = MeshUtils.BlockType.STONE;
             else if (y < surfaceHeight)
                 cData[i] = MeshUtils.BlockType.DIRT;
+            else if (y < 20)
+                cData[i] = MeshUtils.BlockType.WATER;
             else
                 cData[i] = MeshUtils.BlockType.AIR;
         }
@@ -144,51 +163,60 @@ public class Chunk : MonoBehaviour
         BuildTrees();
     }
 
-    (Vector3Int, MeshUtils.BlockType)[] treeDesign = new (Vector3Int, MeshUtils.BlockType)[]
-    {
-        (new Vector3Int(-1,2,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,2,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(1,2,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(-1,3,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,3,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(1,3,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(-1,4,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,4,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(1,4,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,5,-1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,0,0), MeshUtils.BlockType.WOOD),
-        (new Vector3Int(0,1,0), MeshUtils.BlockType.WOOD),
-        (new Vector3Int(-1,2,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,2,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(1,2,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(-1,3,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,3,0), MeshUtils.BlockType.WOOD),
-        (new Vector3Int(1,3,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(-1,4,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,4,0), MeshUtils.BlockType.WOOD),
-        (new Vector3Int(1,4,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(-1,5,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,5,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(1,5,0), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(-1,2,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,2,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(1,2,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(-1,3,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,3,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(1,3,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(-1,4,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,4,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(1,4,1), MeshUtils.BlockType.LEAVES),
-        (new Vector3Int(0,5,1), MeshUtils.BlockType.LEAVES)
+    (Vector3Int, MeshUtils.BlockType)[] treeDesign = new (Vector3Int, MeshUtils.BlockType)[] {
+                                        (new Vector3Int(0,1,-1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(-1,2,-1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,2,-1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,3,-1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(1,3,-1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(-1,4,-1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,4,-1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,5,-1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,0,0), MeshUtils.BlockType.WOOD),
+                                        (new Vector3Int(0,1,0), MeshUtils.BlockType.WOOD),
+                                        (new Vector3Int(1,1,0), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(-1,2,0), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,2,0), MeshUtils.BlockType.WOOD),
+                                        (new Vector3Int(-1,3,0), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,3,0), MeshUtils.BlockType.WOOD),
+                                        (new Vector3Int(1,3,0), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(-1,4,0), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,4,0), MeshUtils.BlockType.WOOD),
+                                        (new Vector3Int(1,4,0), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,5,0), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,1,1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,2,1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(-1,3,1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,3,1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(1,3,1), MeshUtils.BlockType.LEAVES),
+                                        (new Vector3Int(0,4,1), MeshUtils.BlockType.LEAVES)
+
     };
-    
+
+    (Vector3Int, MeshUtils.BlockType)[] cactusDesign = new (Vector3Int, MeshUtils.BlockType)[] {
+                                            (new Vector3Int(0,0,0), MeshUtils.BlockType.WOOD),
+                                            (new Vector3Int(0,1,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(-2,2,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(-1,2,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(0,2,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(-2,3,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(0,3,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(1,3,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(2,3,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(-2,4,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(0,4,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(2,4,0), MeshUtils.BlockType.GRASSTOP),
+                                            (new Vector3Int(0,5,0), MeshUtils.BlockType.GRASSTOP)
+    };
+
+
     void BuildTrees()
     {
         for (int i = 0; i < chunkData.Length; i++)
         {
             if (chunkData[i] == MeshUtils.BlockType.WOODBASE)
             {
-                foreach (var v in treeDesign)
+                foreach ((Vector3Int, MeshUtils.BlockType) v in treeDesign)
                 {
                     Vector3Int blockPos = World.FromFlat(i) + v.Item1;
                     int bIndex = World.ToFlat(blockPos);
@@ -199,6 +227,20 @@ public class Chunk : MonoBehaviour
                     }
                 }
             }
+            else if (chunkData[i] == MeshUtils.BlockType.CACTUS)
+            {
+                foreach ((Vector3Int, MeshUtils.BlockType) v in cactusDesign)
+                {
+                    Vector3Int blockPos = World.FromFlat(i) + v.Item1;
+                    int bIndex = World.ToFlat(blockPos);
+                    if (bIndex >= 0 && bIndex < chunkData.Length)
+                    {
+                        chunkData[bIndex] = v.Item2;
+                        healthData[bIndex] = MeshUtils.BlockType.NOCRACK;
+                    }
+                }
+            }
+
         }
     }
 
@@ -215,78 +257,129 @@ public class Chunk : MonoBehaviour
         height = (int)dimensions.y;
         depth = (int)dimensions.z;
 
-        MeshFilter mf = this.gameObject.AddComponent<MeshFilter>();
-        MeshRenderer mr = this.gameObject.AddComponent<MeshRenderer>();
-        meshRenderer = mr;
-        mr.material = atlas;
+
+        MeshFilter mfs; //solid
+        MeshRenderer mrs;
+        MeshFilter mff; //fluid
+        MeshRenderer mrf;
+
+
+        if (solidMesh == null)
+        {
+            solidMesh = new GameObject("Solid");
+            solidMesh.transform.parent = this.gameObject.transform;
+            mfs = solidMesh.AddComponent<MeshFilter>();
+            mrs = solidMesh.AddComponent<MeshRenderer>();
+            meshRendererSolid = mrs;
+            mrs.material = atlas;
+        }
+        else
+        {
+            mfs = solidMesh.GetComponent<MeshFilter>();
+            DestroyImmediate(solidMesh.GetComponent<Collider>());
+        }
+
+        if (fluidMesh == null)
+        {
+            fluidMesh = new GameObject("Fluid");
+            fluidMesh.transform.parent = this.gameObject.transform;
+            fluidMesh.AddComponent<UVScroller>();
+            mff = fluidMesh.AddComponent<MeshFilter>();
+            mrf = fluidMesh.AddComponent<MeshRenderer>();
+            meshRendererFluid = mrf;
+            mrf.material = fluid;
+        }
+        else
+        {
+            mff = fluidMesh.GetComponent<MeshFilter>();
+            DestroyImmediate(fluidMesh.GetComponent<Collider>());
+        }
+
         blocks = new Block[width, height, depth];
         if(rebuildBlocks)
             BuildChunk();
 
-        var inputMeshes = new List<Mesh>();
-        int vertexStart = 0;
-        int triStart = 0;
-        int meshCount = width * height * depth;
-        int m = 0;
-        var jobs = new ProcessMeshDataJob();
-        jobs.vertexStart = new NativeArray<int>(meshCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
-        jobs.triStart = new NativeArray<int>(meshCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
 
-
-        for (int z = 0; z < depth; z++)
+        for (int pass = 0; pass < 2; pass++)
         {
-            for (int y = 0; y < height; y++)
+
+            var inputMeshes = new List<Mesh>();
+            int vertexStart = 0;
+            int triStart = 0;
+            int meshCount = width * height * depth;
+            int m = 0;
+            var jobs = new ProcessMeshDataJob();
+            jobs.vertexStart = new NativeArray<int>(meshCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+            jobs.triStart = new NativeArray<int>(meshCount, Allocator.TempJob, NativeArrayOptions.UninitializedMemory);
+
+
+            for (int z = 0; z < depth; z++)
             {
-                for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
                 {
-                    blocks[x, y, z] = new Block(new Vector3(x, y, z) + location, 
-					chunkData[x + width * (y + depth * z)], this, 
-					healthData[x + width * (y + depth * z)]);
-                    if (blocks[x, y, z].mesh != null)
+                    for (int x = 0; x < width; x++)
                     {
-                        inputMeshes.Add(blocks[x, y, z].mesh);
-                        var vcount = blocks[x, y, z].mesh.vertexCount;
-                        var icount = (int)blocks[x, y, z].mesh.GetIndexCount(0);
-                        jobs.vertexStart[m] = vertexStart;
-                        jobs.triStart[m] = triStart;
-                        vertexStart += vcount;
-                        triStart += icount;
-                        m++;
+                        blocks[x, y, z] = new Block(new Vector3(x, y, z) + location,
+                        chunkData[x + width * (y + depth * z)], this,
+                        healthData[x + width * (y + depth * z)]);
+                        if (blocks[x, y, z].mesh != null &&
+                            ((pass == 0 && !MeshUtils.canFlow.Contains(chunkData[x + width * (y + depth * z)])) ||
+                            (pass == 1 && MeshUtils.canFlow.Contains(chunkData[x + width * (y + depth * z)]))))
+                        {
+                            inputMeshes.Add(blocks[x, y, z].mesh);
+                            var vcount = blocks[x, y, z].mesh.vertexCount;
+                            var icount = (int)blocks[x, y, z].mesh.GetIndexCount(0);
+                            jobs.vertexStart[m] = vertexStart;
+                            jobs.triStart[m] = triStart;
+                            vertexStart += vcount;
+                            triStart += icount;
+                            m++;
+                        }
                     }
                 }
             }
+
+            jobs.meshData = Mesh.AcquireReadOnlyMeshData(inputMeshes);
+            var outputMeshData = Mesh.AllocateWritableMeshData(1);
+            jobs.outputMesh = outputMeshData[0];
+            jobs.outputMesh.SetIndexBufferParams(triStart, IndexFormat.UInt32);
+            jobs.outputMesh.SetVertexBufferParams(vertexStart,
+                new VertexAttributeDescriptor(VertexAttribute.Position),
+                new VertexAttributeDescriptor(VertexAttribute.Normal, stream: 1),
+                new VertexAttributeDescriptor(VertexAttribute.TexCoord0, stream: 2),
+                new VertexAttributeDescriptor(VertexAttribute.TexCoord1, stream: 3));
+
+            var handle = jobs.Schedule(inputMeshes.Count, 4);
+            var newMesh = new Mesh();
+            newMesh.name = "Chunk_" + location.x + "_" + location.y + "_" + location.z;
+            var sm = new SubMeshDescriptor(0, triStart, MeshTopology.Triangles);
+            sm.firstVertex = 0;
+            sm.vertexCount = vertexStart;
+
+            handle.Complete();
+
+            jobs.outputMesh.subMeshCount = 1;
+            jobs.outputMesh.SetSubMesh(0, sm);
+            Mesh.ApplyAndDisposeWritableMeshData(outputMeshData, new[] { newMesh });
+            jobs.meshData.Dispose();
+            jobs.vertexStart.Dispose();
+            jobs.triStart.Dispose();
+            newMesh.RecalculateBounds();
+
+            if (pass == 0)
+            {
+                mfs.mesh = newMesh;
+                MeshCollider collider = solidMesh.AddComponent<MeshCollider>();
+                collider.sharedMesh = mfs.mesh;
+            }
+            else
+            {
+                mff.mesh = newMesh;
+                MeshCollider collider = fluidMesh.AddComponent<MeshCollider>();
+                fluidMesh.layer = 4;
+                collider.sharedMesh = mff.mesh;
+            }
         }
-
-        jobs.meshData = Mesh.AcquireReadOnlyMeshData(inputMeshes);
-        var outputMeshData = Mesh.AllocateWritableMeshData(1);
-        jobs.outputMesh = outputMeshData[0];
-        jobs.outputMesh.SetIndexBufferParams(triStart, IndexFormat.UInt32);
-        jobs.outputMesh.SetVertexBufferParams(vertexStart,
-            new VertexAttributeDescriptor(VertexAttribute.Position),
-            new VertexAttributeDescriptor(VertexAttribute.Normal, stream: 1),
-            new VertexAttributeDescriptor(VertexAttribute.TexCoord0, stream: 2),
-            new VertexAttributeDescriptor(VertexAttribute.TexCoord1, stream: 3));
-
-        var handle = jobs.Schedule(inputMeshes.Count, 4);
-        var newMesh = new Mesh();
-        newMesh.name = "Chunk_" + location.x + "_" + location.y + "_" + location.z;
-        var sm = new SubMeshDescriptor(0, triStart, MeshTopology.Triangles);
-        sm.firstVertex = 0;
-        sm.vertexCount = vertexStart;
-
-        handle.Complete();
-
-        jobs.outputMesh.subMeshCount = 1;
-        jobs.outputMesh.SetSubMesh(0, sm);
-        Mesh.ApplyAndDisposeWritableMeshData(outputMeshData, new[] { newMesh });
-        jobs.meshData.Dispose();
-        jobs.vertexStart.Dispose();
-        jobs.triStart.Dispose();
-        newMesh.RecalculateBounds();
-
-        mf.mesh = newMesh;
-        MeshCollider collider = this.gameObject.AddComponent<MeshCollider>();
-        collider.sharedMesh = mf.mesh;
     }
 
     [BurstCompile]
